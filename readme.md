@@ -14,7 +14,7 @@ And then it allows them to switch between the local and the online version of th
 This project has been forked from https://github.com/publiux/laravelcdn. All credit for the original work goes there.
 
 #### Laravel Support
-- This fork supports PHP 8.0+ and Laravel 8+.
+- This fork supports PHP 8.1+ and Laravel 8+.
 - Package auto-discovery is supported.
 
 ## Highlights
