@@ -1,10 +1,8 @@
 # Laravel CDN Assets Manager
 
-[![Latest Stable Version](https://poser.pugx.org/publiux/laravelcdn/v/stable)](https://packagist.org/packages/publiux/laravelcdn)
-[![Total Downloads](https://poser.pugx.org/publiux/laravelcdn/downloads)](https://packagist.org/packages/publiux/laravelcdn)
-[![Build Status](https://travis-ci.org/publiux/laravelcdn.svg)](https://travis-ci.org/publiux/laravelcdn)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/publiux/laravelcdn/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/publiux/laravelcdn/?branch=master)
-[![License](https://poser.pugx.org/publiux/laravelcdn/license)](https://packagist.org/packages/publiux/laravelcdn)
+[![Latest Stable Version](http://poser.pugx.org/jetcod/laravel-cdn/v?style=for-the-badge)](https://packagist.org/packages/jetcod/laravel-cdn)
+[![Build Status](https://github.com/jetcod/laravel-cdn/actions/workflows/php.yml/badge.svg?style=for-the-badge&label=%3Cb%3EBuild%3C/b%3E)](https://github.com/jetcod/laravel-cdn/actions)
+[![License](http://poser.pugx.org/jetcod/laravel-cdn/license?style=for-the-badge)](https://packagist.org/packages/jetcod/laravel-cdn)
 
 
 ##### Content Delivery Network Package for Laravel
