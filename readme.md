@@ -12,14 +12,12 @@
 The package provides the developer the ability to upload their assets (or any public file) to a CDN with a single artisan command.
 And then it allows them to switch between the local and the online version of the files.
 
-###### Fork From [Vinelab/cdn](https://github.com/Vinelab/cdn)
-This project has been forked from https://github.com/Vinelab/cdn. All credit for the original work goes there.
+###### Fork From [publiux/laravelcdn](https://github.com/publiux/laravelcdn)
+This project has been forked from https://github.com/publiux/laravelcdn. All credit for the original work goes there.
 
 #### Laravel Support
-- This fork supports Laravel 8 and up.
+- This fork supports PHP 8.0+ and Laravel 8+.
 - Package auto-discovery is supported.
-- If you need to use Laravel versions below 8, please use version ~3 of this package.
-- Laravel version 8 and above should be using version ~4 of this package.
 
 ## Highlights
 
@@ -39,15 +37,11 @@ This project has been forked from https://github.com/Vinelab/cdn. All credit for
 
 #### Via Composer
 
-Require `publiux/laravelcdn` in your project:
+Require `jetcod/laravelcdn` in your project:
 
 ```bash
-composer require "publiux/laravelcdn:~4.0"
+composer require "jetcod/laravelcdn"
 ```
-
-*If you are using Laravel 5.4 or below, you need to register the service provider:*
-
-Laravel 5.4 and below: Add the service provider and facade to `config/app.php`:
 
 ```php
 'providers' => array(
@@ -61,14 +55,6 @@ Laravel 5.4 and below: Add the service provider and facade to `config/app.php`:
      //...
      'CDN' => Publiux\laravelcdn\Facades\CdnFacadeAccessor::class
 ),
-```
-
-*If you are using Laravel 5.5, there is no need to register the service provider as this package is automatically discovered.*
-
-Publish the package config file:
-
-```bash
-php artisan vendor:publish --provider 'Publiux\laravelcdn\CdnServiceProvider'
 ```
 
 ## Environment Configuration
@@ -269,7 +255,7 @@ To use a file from outside the `public/` directory, anywhere in `app/` use the `
 To run the tests, run the following command from the project folder.
 
 ```bash
-$ ./vendor/bin/phpunit
+$ composer test
 ```
 
 ## Support
@@ -286,6 +272,7 @@ Please see [CONTRIBUTING](https://github.com/publiux/laravelcdn/blob/master/CONT
 If you discover any security related issues, please email publiux@gmail.com instead of using the issue tracker for faster response. You should open an issue at the same time.
 
 ## Credits
+- [Hamid Ghorashi](https://github.com/hamidgh83) (forker)
 - [Raul Ruiz](https://github.com/publiux) (forker)
 - [Mahmoud Zalt](https://github.com/Mahmoudz) (original developer)
 - [Filipe Garcia](https://github.com/filipegar) (contributred pre-fork, uncredited pull request for duplicate uploading verification)
