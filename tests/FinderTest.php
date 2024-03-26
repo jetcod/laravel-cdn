@@ -14,12 +14,7 @@ use Mockery as M;
  */
 class FinderTest extends TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-    public function tearDown()
+    public function tearDown(): void
     {
         M::close();
         parent::tearDown();
@@ -60,6 +55,8 @@ class FinderTest extends TestCase
         $console_output = M::mock('Symfony\Component\Console\Output\ConsoleOutput');
         $console_output->shouldReceive('writeln')
             ->atLeast(1);
+
+        $this->expectException(\Symfony\Component\Finder\Exception\DirectoryNotFoundException::class);
 
         $finder = new \Publiux\laravelcdn\Finder($console_output);
 

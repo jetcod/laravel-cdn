@@ -3,6 +3,7 @@
 namespace Publiux\laravelcdn\Tests;
 
 use Mockery as M;
+use Publiux\laravelcdn\Exceptions\EmptyPathException;
 
 /**
  * Class CdnFacadeTest.
@@ -13,7 +14,7 @@ use Mockery as M;
  */
 class CdnFacadeTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -73,7 +74,7 @@ class CdnFacadeTest extends TestCase
             $this->provider_factory, $this->helper, $this->validator);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         M::close();
         parent::tearDown();
@@ -106,6 +107,8 @@ class CdnFacadeTest extends TestCase
      */
     public function testUrlGeneratorThrowsException()
     {
+        $this->expectException(EmptyPathException::class);
+
         $this->invokeMethod($this->facade, 'generateUrl', [null, null]);
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
-namespace Publiux\laravelcdn\Tests;
+namespace Publiux\laravelcdn\Tests\Providers;
 
 use Illuminate\Support\Collection;
 use Mockery as M;
+use Publiux\laravelcdn\Tests\TestCase;
+use Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface;
 
 /**
  * Class AwsS3ProviderTest.
@@ -14,7 +16,7 @@ use Mockery as M;
  */
 class AwsS3ProviderTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +29,7 @@ class AwsS3ProviderTest extends TestCase
         $this->m_console = M::mock('Symfony\Component\Console\Output\ConsoleOutput');
         $this->m_console->shouldReceive('writeln')->atLeast(2);
 
-        $this->m_validator = M::mock('Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface');
+        $this->m_validator = M::mock(ProviderValidatorInterface::class);
         $this->m_validator->shouldReceive('validate');
 
         $this->m_helper = M::mock('Publiux\laravelcdn\CdnHelper');
@@ -35,7 +37,7 @@ class AwsS3ProviderTest extends TestCase
             ->andReturn($this->pased_url);
 
         $this->m_spl_file = M::mock('Symfony\Component\Finder\SplFileInfo');
-        $this->m_spl_file->shouldReceive('getPathname')->andReturn('publiux/laravelcdn/tests/Publiux/laravelcdn/AwsS3ProviderTest.php');
+        $this->m_spl_file->shouldReceive('getPathname')->andReturn(AwsS3ProviderTest::class);
         $this->m_spl_file->shouldReceive('getRealPath')->andReturn(__DIR__.'/AwsS3ProviderTest.php');
 
         $this->p_awsS3Provider = M::mock('\Publiux\laravelcdn\Providers\AwsS3Provider[connect]', array(
@@ -49,6 +51,8 @@ class AwsS3ProviderTest extends TestCase
         $m_command = M::mock('Aws\Command');
         $this->m_s3->shouldReceive('getCommand')
             ->andReturn($m_command);
+        $this->m_s3->shouldReceive('listObjectsV2')
+            ->andReturn(new \Aws\Result());
         $m_command1 = M::mock('Aws\Result')->shouldIgnoreMissing();
         $this->m_s3->shouldReceive('listObjects')
             ->andReturn($m_command1);
@@ -58,7 +62,7 @@ class AwsS3ProviderTest extends TestCase
         $this->p_awsS3Provider->shouldReceive('connect')->andReturn(true);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         M::close();
         parent::tearDown();
@@ -204,5 +208,10 @@ class AwsS3ProviderTest extends TestCase
         $result = $this->p_awsS3Provider->urlGenerator($this->path);
 
         $this->assertEquals($this->path_url, $result);
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [\Publiux\laravelcdn\CdnServiceProvider::class];
     }
 }

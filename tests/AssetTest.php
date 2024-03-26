@@ -13,14 +13,14 @@ use Mockery as M;
  */
 class AssetTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->asset = new \Publiux\laravelcdn\Asset();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         M::close();
         parent::tearDown();
