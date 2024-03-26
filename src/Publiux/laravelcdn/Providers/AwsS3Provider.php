@@ -257,11 +257,10 @@ class AwsS3Provider extends Provider implements ProviderInterface
 
         $params = ['Bucket' => $this->getBucket()];
         do {
-            $files = $this->s3_client->listObjectsV2($params);
-            $params['ContinuationToken'] = $files->get('NextContinuationToken');
+            if ($files = $this->s3_client->listObjectsV2($params)) {
+                $params['ContinuationToken'] = $files->get('NextContinuationToken');
 
-            if ($contents = $files->get('Contents')) {
-                foreach ($contents?:[] as $file) {
+                foreach ($files->get('Contents')?:[] as $file) {
                     $a = [
                         'Key' => $file['Key'],
                         "LastModified" => $file['LastModified']->getTimestamp(),
@@ -270,7 +269,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
                     $filesOnAWS->put($file['Key'], $a);
                 }
             }
-        } while ($files->get('IsTruncated'));
+        } while ($files instanceof \Aws\Result && $files->get('IsTruncated'));
 
         if ($filesOnAWS->isEmpty()) {
             //no files on bucket. lets upload everything found.
