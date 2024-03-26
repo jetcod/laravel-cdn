@@ -283,32 +283,3 @@ If you discover any security related issues, please email publiux@gmail.com inst
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/publiux/laravelcdn/blob/master/LICENSE) for more information.
-
-## Changelog
-
-#### v2.0.5
-- Added connection error reporting
-
-#### v2.0.4
-- Added API support for DigitalOcean Spaces
-
-#### v2.0.3
-- Added support for an upload folder prefix
-
-#### v2.0.2
-- Updated readme to detail instructions on Laravel <5.5 usage
-
-#### v2.0.1
-- Fixed typo in composer.json
-
-#### v2.0.0
-- Support for Laravel 5.5
-
-#### v1.0.3
-- Fixed bug where schemeless Urls could not be used for CloudFront. Valid urls now begin with http, https, or simply '//'
-
-#### v1.0.2
-- Fixed bug where the elixir function was inadvertently omitted from the release.
-
-#### v1.0.1
-- Allow configuration using environment values
