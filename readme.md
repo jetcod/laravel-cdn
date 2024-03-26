@@ -1,7 +1,9 @@
 # Laravel CDN Assets Manager
 
-[![Latest Stable Version](http://poser.pugx.org/jetcod/laravel-cdn/v?style=for-the-badge)](https://packagist.org/packages/jetcod/laravel-cdn)
 [![Build Status](https://github.com/jetcod/laravel-cdn/actions/workflows/php.yml/badge.svg?style=for-the-badge&label=%3Cb%3EBuild%3C/b%3E)](https://github.com/jetcod/laravel-cdn/actions)
+
+
+[![Latest Stable Version](http://poser.pugx.org/jetcod/laravel-cdn/v?style=for-the-badge)](https://packagist.org/packages/jetcod/laravel-cdn)
 [![License](http://poser.pugx.org/jetcod/laravel-cdn/license?style=for-the-badge)](https://packagist.org/packages/jetcod/laravel-cdn)
 
 
