@@ -260,13 +260,15 @@ class AwsS3Provider extends Provider implements ProviderInterface
             $files = $this->s3_client->listObjectsV2($params);
             $params['ContinuationToken'] = $files->get('NextContinuationToken');
 
-            foreach ($files->get('Contents')?:[] as $file) {
-                $a = [
-                    'Key' => $file['Key'],
-                    "LastModified" => $file['LastModified']->getTimestamp(),
-                    'Size' => intval($file['Size'])
-                ];
-                $filesOnAWS->put($file['Key'], $a);
+            if ($contents = $files->get('Contents')) {
+                foreach ($contents?:[] as $file) {
+                    $a = [
+                        'Key' => $file['Key'],
+                        "LastModified" => $file['LastModified']->getTimestamp(),
+                        'Size' => intval($file['Size'])
+                    ];
+                    $filesOnAWS->put($file['Key'], $a);
+                }
             }
         } while ($files->get('IsTruncated'));
 
