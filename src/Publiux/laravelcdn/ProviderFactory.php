@@ -18,7 +18,7 @@ use Publiux\laravelcdn\Exceptions\UnsupportedProviderException;
  */
 class ProviderFactory implements ProviderFactoryInterface
 {
-    const DRIVERS_NAMESPACE = 'Publiux\\laravelcdn\\Providers\\';
+    public const DRIVERS_NAMESPACE = 'Publiux\\laravelcdn\\Providers\\';
 
     /**
      * Create and return an instance of the corresponding
@@ -26,9 +26,9 @@ class ProviderFactory implements ProviderFactoryInterface
      *
      * @param array $configurations
      *
-     * @throws \Publiux\laravelcdn\UnsupportedDriverException
-     *
      * @return mixed
+     *
+     * @throws UnsupportedDriverException
      */
     public function create($configurations = [])
     {
@@ -40,15 +40,13 @@ class ProviderFactory implements ProviderFactoryInterface
         }
 
         // prepare the full driver class name
-        $driver_class = self::DRIVERS_NAMESPACE.ucwords($provider).'Provider';
+        $driver_class = self::DRIVERS_NAMESPACE . ucwords($provider) . 'Provider';
 
         if (!class_exists($driver_class)) {
-            throw new UnsupportedProviderException("CDN provider ($provider) is not supported");
+            throw new UnsupportedProviderException("CDN provider ({$provider}) is not supported");
         }
 
         // initialize the driver object and initialize it with the configurations
-        $driver_object = App::make($driver_class)->init($configurations);
-
-        return $driver_object;
+        return App::make($driver_class)->init($configurations);
     }
 }

@@ -20,13 +20,10 @@ class CdnHelper implements CdnHelperInterface
     /**
      * An object of the 'Repository' class that allows reading the laravel config files.
      *
-     * @var \Illuminate\Config\Repository
+     * @var Repository
      */
     protected $configurations;
 
-    /**
-     * @param \Illuminate\Config\Repository $configurations
-     */
     public function __construct(Repository $configurations)
     {
         $this->configurations = $configurations;
@@ -36,9 +33,9 @@ class CdnHelper implements CdnHelperInterface
      * Check if the config file exist and return it or
      * throw an exception.
      *
-     * @throws Exceptions\MissingConfigurationFileException
-     *
      * @return array
+     *
+     * @throws MissingConfigurationFileException
      */
     public function getConfigurations()
     {
@@ -54,32 +51,27 @@ class CdnHelper implements CdnHelperInterface
     /**
      * Checks for any required configuration is missed.
      *
-     * @param $configuration
-     * @param $required
-     *
-     * @throws \Publiux\laravelcdn\Exceptions\MissingConfigurationException
+     * @throws MissingConfigurationException
      */
     public function validate($configuration, $required)
     {
         // search for any null or empty field to throw an exception
         $missing = '';
         foreach ($configuration as $key => $value) {
-            if (in_array($key, $required) &&
-                (empty($value) || $value == null || $value == '')
+            if (in_array($key, $required)
+                && (empty($value) || null == $value || '' == $value)
             ) {
-                $missing .= ' '.$key;
+                $missing .= ' ' . $key;
             }
         }
 
         if ($missing) {
-            throw new MissingConfigurationException('Missed Configuration:'.$missing);
+            throw new MissingConfigurationException('Missed Configuration:' . $missing);
         }
     }
 
     /**
      * Take url as string and return it parsed object.
-     *
-     * @param $url
      *
      * @return mixed
      */
@@ -91,9 +83,6 @@ class CdnHelper implements CdnHelperInterface
     /**
      * check if a string starts with a string.
      *
-     * @param $with
-     * @param $str
-     *
      * @return bool
      */
     public function startsWith($with, $str)
@@ -103,8 +92,6 @@ class CdnHelper implements CdnHelperInterface
 
     /**
      * remove any extra slashes '/' from the path.
-     *
-     * @param $path
      *
      * @return string
      */

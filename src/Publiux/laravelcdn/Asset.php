@@ -15,6 +15,13 @@ use Publiux\laravelcdn\Contracts\AssetInterface;
  */
 class Asset implements AssetInterface
 {
+    /*
+     * Allowed assets for upload (found in included_directories)
+     *
+     * @var Collection
+     */
+    public $assets;
+
     /**
      * default [include] configurations.
      *
@@ -79,17 +86,8 @@ class Asset implements AssetInterface
      */
     protected $excluded_patterns;
 
-    /*
-     * @var boolean
-     */
+    // @var boolean
     protected $exclude_hidden;
-
-    /*
-     * Allowed assets for upload (found in included_directories)
-     *
-     * @var Collection
-     */
-    public $assets;
 
     /**
      * build a Asset object that contains the assets related configurations.
@@ -103,31 +101,16 @@ class Asset implements AssetInterface
         $this->parseAndFillConfiguration($configurations);
 
         $this->included_directories = $this->default_include['directories'];
-        $this->included_extensions = $this->default_include['extensions'];
-        $this->included_patterns = $this->default_include['patterns'];
+        $this->included_extensions  = $this->default_include['extensions'];
+        $this->included_patterns    = $this->default_include['patterns'];
 
         $this->excluded_directories = $this->default_exclude['directories'];
-        $this->excluded_files = $this->default_exclude['files'];
-        $this->excluded_extensions = $this->default_exclude['extensions'];
-        $this->excluded_patterns = $this->default_exclude['patterns'];
-        $this->exclude_hidden = $this->default_exclude['hidden'];
+        $this->excluded_files       = $this->default_exclude['files'];
+        $this->excluded_extensions  = $this->default_exclude['extensions'];
+        $this->excluded_patterns    = $this->default_exclude['patterns'];
+        $this->exclude_hidden       = $this->default_exclude['hidden'];
 
         return $this;
-    }
-
-    /**
-     * Check if the config file has any missed attribute, and if any attribute
-     * is missed will be overridden by a default attribute defined in this class.
-     *
-     * @param $configurations
-     */
-    private function parseAndFillConfiguration($configurations)
-    {
-        $this->default_include = isset($configurations['include']) ?
-            array_merge($this->default_include, $configurations['include']) : $this->default_include;
-
-        $this->default_exclude = isset($configurations['exclude']) ?
-            array_merge($this->default_exclude, $configurations['exclude']) : $this->default_exclude;
     }
 
     /**
@@ -208,5 +191,18 @@ class Asset implements AssetInterface
     public function getExcludeHidden()
     {
         return $this->exclude_hidden;
+    }
+
+    /**
+     * Check if the config file has any missed attribute, and if any attribute
+     * is missed will be overridden by a default attribute defined in this class.
+     */
+    private function parseAndFillConfiguration($configurations)
+    {
+        $this->default_include = isset($configurations['include']) ?
+            array_merge($this->default_include, $configurations['include']) : $this->default_include;
+
+        $this->default_exclude = isset($configurations['exclude']) ?
+            array_merge($this->default_exclude, $configurations['exclude']) : $this->default_exclude;
     }
 }

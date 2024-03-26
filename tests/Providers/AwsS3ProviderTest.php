@@ -2,8 +2,10 @@
 
 namespace Publiux\laravelcdn\Tests\Providers;
 
+use Aws\Result;
 use Illuminate\Support\Collection;
 use Mockery as M;
+use Publiux\laravelcdn\CdnServiceProvider;
 use Publiux\laravelcdn\Tests\TestCase;
 use Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface;
 
@@ -13,6 +15,10 @@ use Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface;
  * @category Test
  *
  * @author   Mahmoud Zalt <mahmoud@vinelab.com>
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 class AwsS3ProviderTest extends TestCase
 {
@@ -20,10 +26,10 @@ class AwsS3ProviderTest extends TestCase
     {
         parent::setUp();
 
-        $this->url = 'http://www.google.com';
-        $this->cdn_url = 'http://my-bucket-name.www.google.com/public/css/cool/style.css';
-        $this->path = 'public/css/cool/style.css';
-        $this->path_url = 'http://www.google.com/public/css/cool/style.css';
+        $this->url       = 'http://www.google.com';
+        $this->cdn_url   = 'http://my-bucket-name.www.google.com/public/css/cool/style.css';
+        $this->path      = 'public/css/cool/style.css';
+        $this->path_url  = 'http://www.google.com/public/css/cool/style.css';
         $this->pased_url = parse_url($this->url);
 
         $this->m_console = M::mock('Symfony\Component\Console\Output\ConsoleOutput');
@@ -34,28 +40,32 @@ class AwsS3ProviderTest extends TestCase
 
         $this->m_helper = M::mock('Publiux\laravelcdn\CdnHelper');
         $this->m_helper->shouldReceive('parseUrl')
-            ->andReturn($this->pased_url);
+            ->andReturn($this->pased_url)
+        ;
 
         $this->m_spl_file = M::mock('Symfony\Component\Finder\SplFileInfo');
         $this->m_spl_file->shouldReceive('getPathname')->andReturn(AwsS3ProviderTest::class);
-        $this->m_spl_file->shouldReceive('getRealPath')->andReturn(__DIR__.'/AwsS3ProviderTest.php');
+        $this->m_spl_file->shouldReceive('getRealPath')->andReturn(__DIR__ . '/AwsS3ProviderTest.php');
 
-        $this->p_awsS3Provider = M::mock('\Publiux\laravelcdn\Providers\AwsS3Provider[connect]', array(
+        $this->p_awsS3Provider = M::mock('\Publiux\laravelcdn\Providers\AwsS3Provider[connect]', [
             $this->m_console,
             $this->m_validator,
             $this->m_helper,
-        ));
+        ]);
 
         $this->m_s3 = M::mock('Aws\S3\S3Client');
         $this->m_s3->shouldReceive('factory')->andReturn('Aws\S3\S3Client');
         $m_command = M::mock('Aws\Command');
         $this->m_s3->shouldReceive('getCommand')
-            ->andReturn($m_command);
+            ->andReturn($m_command)
+        ;
         $this->m_s3->shouldReceive('listObjectsV2')
-            ->andReturn(new \Aws\Result());
+            ->andReturn(new Result())
+        ;
         $m_command1 = M::mock('Aws\Result')->shouldIgnoreMissing();
         $this->m_s3->shouldReceive('listObjects')
-            ->andReturn($m_command1);
+            ->andReturn($m_command1)
+        ;
         $this->m_s3->shouldReceive('execute');
         $this->p_awsS3Provider->setS3Client($this->m_s3);
 
@@ -71,27 +81,27 @@ class AwsS3ProviderTest extends TestCase
     public function testInitializingObject()
     {
         $configurations = [
-            'default' => 'AwsS3',
-            'url' => 'https://s3.amazonaws.com',
+            'default'   => 'AwsS3',
+            'url'       => 'https://s3.amazonaws.com',
             'threshold' => 10,
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region' => 'us-standard',
+                        'region'  => 'us-standard',
                         'version' => 'latest',
                         'buckets' => [
                             'my-bucket-name' => '*',
                         ],
-                        'acl' => 'public-read',
+                        'acl'        => 'public-read',
                         'cloudfront' => [
-                            'use' => false,
+                            'use'     => false,
                             'cdn_url' => null,
                         ],
-                        'metadata' => [],
-                        'expires' => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
+                        'metadata'      => [],
+                        'expires'       => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
                         'cache-control' => 'max-age=2628000',
-                        'version' => null,
-                        'http' => null,
+                        'version'       => null,
+                        'http'          => null,
                     ],
                 ],
             ],
@@ -105,27 +115,27 @@ class AwsS3ProviderTest extends TestCase
     public function testUploadingAssets()
     {
         $configurations = [
-            'default' => 'AwsS3',
-            'url' => 'https://s3.amazonaws.com',
+            'default'   => 'AwsS3',
+            'url'       => 'https://s3.amazonaws.com',
             'threshold' => 10,
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region' => 'us-standard',
+                        'region'  => 'us-standard',
                         'version' => 'latest',
                         'buckets' => [
                             'my-bucket-name' => '*',
                         ],
-                        'acl' => 'public-read',
+                        'acl'        => 'public-read',
                         'cloudfront' => [
-                            'use' => false,
+                            'use'     => false,
                             'cdn_url' => null,
                         ],
-                        'metadata' => [],
-                        'expires' => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
+                        'metadata'      => [],
+                        'expires'       => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
                         'cache-control' => 'max-age=2628000',
-                        'version' => null,
-                        'http' => null,
+                        'version'       => null,
+                        'http'          => null,
                     ],
                 ],
             ],
@@ -141,27 +151,27 @@ class AwsS3ProviderTest extends TestCase
     public function testUrlGenerator()
     {
         $configurations = [
-            'default' => 'AwsS3',
-            'url' => 'https://s3.amazonaws.com',
+            'default'   => 'AwsS3',
+            'url'       => 'https://s3.amazonaws.com',
             'threshold' => 10,
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region' => 'us-standard',
+                        'region'  => 'us-standard',
                         'version' => 'latest',
                         'buckets' => [
                             'my-bucket-name' => '*',
                         ],
-                        'acl' => 'public-read',
+                        'acl'        => 'public-read',
                         'cloudfront' => [
-                            'use' => false,
+                            'use'     => false,
                             'cdn_url' => null,
                         ],
-                        'metadata' => [],
-                        'expires' => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
+                        'metadata'      => [],
+                        'expires'       => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
                         'cache-control' => 'max-age=2628000',
-                        'version' => null,
-                        'http' => null,
+                        'version'       => null,
+                        'http'          => null,
                     ],
                 ],
             ],
@@ -177,27 +187,27 @@ class AwsS3ProviderTest extends TestCase
     public function testEmptyUrlGenerator()
     {
         $configurations = [
-            'default' => 'AwsS3',
-            'url' => 'https://s3.amazonaws.com',
+            'default'   => 'AwsS3',
+            'url'       => 'https://s3.amazonaws.com',
             'threshold' => 10,
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region' => 'us-standard',
+                        'region'  => 'us-standard',
                         'version' => 'latest',
                         'buckets' => [
                             '' => '*',
                         ],
-                        'acl' => 'public-read',
+                        'acl'        => 'public-read',
                         'cloudfront' => [
-                            'use' => false,
+                            'use'     => false,
                             'cdn_url' => null,
                         ],
-                        'metadata' => [],
-                        'expires' => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
+                        'metadata'      => [],
+                        'expires'       => gmdate('D, d M Y H:i:s T', strtotime('+5 years')),
                         'cache-control' => 'max-age=2628000',
-                        'version' => null,
-                        'http' => null,
+                        'version'       => null,
+                        'http'          => null,
                     ],
                 ],
             ],
@@ -212,6 +222,6 @@ class AwsS3ProviderTest extends TestCase
 
     protected function getPackageProviders($app)
     {
-        return [\Publiux\laravelcdn\CdnServiceProvider::class];
+        return [CdnServiceProvider::class];
     }
 }

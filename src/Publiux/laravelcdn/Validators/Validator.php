@@ -12,6 +12,4 @@ use Publiux\laravelcdn\Validators\Contracts\ValidatorInterface;
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
  */
-class Validator implements ValidatorInterface
-{
-}
+class Validator implements ValidatorInterface {}

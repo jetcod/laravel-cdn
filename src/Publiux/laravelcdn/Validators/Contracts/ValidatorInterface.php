@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Publiux\laravelcdn\Validators\Contracts;
 
 /**
@@ -8,6 +7,4 @@ namespace Publiux\laravelcdn\Validators\Contracts;
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
  */
-interface ValidatorInterface
-{
-}
+interface ValidatorInterface {}

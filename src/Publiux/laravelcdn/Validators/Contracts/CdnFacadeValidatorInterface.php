@@ -7,6 +7,4 @@ namespace Publiux\laravelcdn\Validators\Contracts;
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
  */
-interface CdnFacadeValidatorInterface
-{
-}
+interface CdnFacadeValidatorInterface {}

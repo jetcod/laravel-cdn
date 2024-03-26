@@ -36,9 +36,6 @@ class PushCommand extends Command
      */
     protected $cdn;
 
-    /**
-     * @param CdnInterface $cdn
-     */
     public function __construct(CdnInterface $cdn)
     {
         $this->cdn = $cdn;

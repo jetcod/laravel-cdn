@@ -3,6 +3,8 @@
 namespace Publiux\laravelcdn\Tests;
 
 use Mockery as M;
+use Publiux\laravelcdn\CdnServiceProvider;
+use Publiux\laravelcdn\Providers\AwsS3Provider;
 
 /**
  * Class CdnTest.
@@ -10,6 +12,10 @@ use Mockery as M;
  * @category Test
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 class CdnTest extends TestCase
 {
@@ -65,7 +71,6 @@ class CdnTest extends TestCase
         $result->assertSuccessful();
     }
 
-
     public function testPushCommand()
     {
         $m_console = M::mock('Symfony\Component\Console\Output\ConsoleOutput');
@@ -92,7 +97,7 @@ class CdnTest extends TestCase
 
         $p_aws_s3_provider->shouldReceive('connect')->andReturn(true);
 
-        $this->app->bind(\Publiux\laravelcdn\Providers\AwsS3Provider::class, function () use ($p_aws_s3_provider) {
+        $this->app->bind(AwsS3Provider::class, function () use ($p_aws_s3_provider) {
             return $p_aws_s3_provider;
         });
 
@@ -111,13 +116,13 @@ class CdnTest extends TestCase
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region'      => 'us-standard',
-                        'version'     => 'latest',
-                        'buckets'     => [
+                        'region'  => 'us-standard',
+                        'version' => 'latest',
+                        'buckets' => [
                             'my-bucket-name' => '*',
                         ],
-                        'acl'         => 'public-read',
-                        'cloudfront'  => [
+                        'acl'        => 'public-read',
+                        'cloudfront' => [
                             'use'     => false,
                             'cdn_url' => '',
                         ],
@@ -131,12 +136,12 @@ class CdnTest extends TestCase
                     ],
                 ],
             ],
-            'include'   => [
+            'include' => [
                 'directories' => [__DIR__],
                 'extensions'  => [],
                 'patterns'    => [],
             ],
-            'exclude'   => [
+            'exclude' => [
                 'directories' => [],
                 'files'       => [],
                 'extensions'  => [],
@@ -148,6 +153,6 @@ class CdnTest extends TestCase
 
     protected function getPackageProviders($app)
     {
-        return [\Publiux\laravelcdn\CdnServiceProvider::class];
+        return [CdnServiceProvider::class];
     }
 }

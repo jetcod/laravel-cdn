@@ -23,26 +23,21 @@ class CdnServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../../config/cdn.php' => config_path('cdn.php'),
+            __DIR__ . '/../../config/cdn.php' => config_path('cdn.php'),
         ]);
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
-
         // implementation bindings:
-        //-------------------------
+        // -------------------------
         $this->app->bind(
             'Publiux\laravelcdn\Contracts\CdnInterface',
             'Publiux\laravelcdn\Cdn'
@@ -94,7 +89,7 @@ class CdnServiceProvider extends ServiceProvider
         );
 
         // register the commands:
-        //-----------------------
+        // -----------------------
         $this->app->singleton('cdn.push', function ($app) {
             return $app->make('Publiux\laravelcdn\Commands\PushCommand');
         });
@@ -108,7 +103,7 @@ class CdnServiceProvider extends ServiceProvider
         $this->commands('cdn.empty');
 
         // facade bindings:
-        //-----------------
+        // -----------------
 
         // Register 'CdnFacade' instance container to our CdnFacade object
         $this->app->singleton('CDN', function ($app) {
@@ -116,10 +111,10 @@ class CdnServiceProvider extends ServiceProvider
         });
 
         // Shortcut so developers don't need to add an Alias in app/config/app.php
-//        $this->app->booting(function () {
-//            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-//            $loader->alias('Cdn', 'Publiux\laravelcdn\Facades\CdnFacadeAccessor');
-//        });
+        //        $this->app->booting(function () {
+        //            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        //            $loader->alias('Cdn', 'Publiux\laravelcdn\Facades\CdnFacadeAccessor');
+        //        });
     }
 
     /**

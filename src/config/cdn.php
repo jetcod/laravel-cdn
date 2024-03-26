@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Bypass loading assets from the CDN
@@ -69,11 +68,8 @@ return [
     |
     */
     'providers' => [
-
         'aws' => [
-
             's3' => [
-
                 /*
                 |--------------------------------------------------------------------------
                 | Web Service Version
@@ -126,8 +122,7 @@ return [
                 | * Note: in case of multiple buckets remove the '*'
                 |
                 */
-                'buckets'       => [
-
+                'buckets' => [
                     'bucket-name' => '*',
                     // examples:
                     //   'your-js-bucket-name-here'   =>  ['public/js'],
@@ -177,7 +172,7 @@ return [
                 | locations to achieve low latency and faster page load times.
                 |
                 */
-                'cloudfront'    => [
+                'cloudfront' => [
                     'use'     => env('CDN_UseCloudFront', false),
                     'cdn_url' => env('CDN_CloudFrontUrl', ''),
                 ],
@@ -211,11 +206,8 @@ return [
                 |
                 */
                 'cache-control' => 'max-age=2628000',
-
             ],
-
         ],
-
     ],
     /*
     |--------------------------------------------------------------------------
@@ -228,7 +220,7 @@ return [
     | Enter the full paths of directories (starting from the application root).
     |
     */
-    'include'   => [
+    'include' => [
         'directories' => ['public'],
         'extensions'  => [],
         'patterns'    => [],
@@ -245,12 +237,11 @@ return [
     | 'hidden' is a boolean to excludes "hidden" directories and files (starting with a dot)
     |
     */
-    'exclude'   => [
+    'exclude' => [
         'directories' => [],
         'files'       => [],
         'extensions'  => [],
         'patterns'    => [],
         'hidden'      => true,
     ],
-
 ];

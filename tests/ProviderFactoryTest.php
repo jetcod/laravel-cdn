@@ -3,6 +3,9 @@
 namespace Publiux\laravelcdn\Tests;
 
 use Mockery as M;
+use Publiux\laravelcdn\Exceptions\MissingConfigurationException;
+use Publiux\laravelcdn\ProviderFactory;
+use Publiux\laravelcdn\Providers\AwsS3Provider;
 
 /**
  * Class ProviderFactoryTest.
@@ -10,10 +13,13 @@ use Mockery as M;
  * @category Test
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 class ProviderFactoryTest extends TestCase
 {
-
     public function tearDown(): void
     {
         M::close();
@@ -24,10 +30,10 @@ class ProviderFactoryTest extends TestCase
     {
         $configurations = ['default' => 'AwsS3'];
 
-        $mockAwsS3Prvoider = M::mock(\Publiux\laravelcdn\Providers\AwsS3Provider::class);
-        $this->app->instance(\Publiux\laravelcdn\Providers\AwsS3Provider::class, $mockAwsS3Prvoider);
+        $mockAwsS3Prvoider = M::mock(AwsS3Provider::class);
+        $this->app->instance(AwsS3Provider::class, $mockAwsS3Prvoider);
 
-        $providerFactory = app()->make(\Publiux\laravelcdn\ProviderFactory::class);
+        $providerFactory = app()->make(ProviderFactory::class);
 
         $mockAwsS3Prvoider->shouldReceive('init')
             ->with($configurations)
@@ -47,10 +53,10 @@ class ProviderFactoryTest extends TestCase
     {
         $configurations = ['default' => ''];
 
-        $mockAwsS3Prvoider = M::mock(\Publiux\laravelcdn\Providers\AwsS3Provider::class);
-        $providerFactory = app()->make(\Publiux\laravelcdn\ProviderFactory::class);
+        $mockAwsS3Prvoider = M::mock(AwsS3Provider::class);
+        $providerFactory   = app()->make(ProviderFactory::class);
 
-        $this->expectException(\Publiux\laravelcdn\Exceptions\MissingConfigurationException::class);
+        $this->expectException(MissingConfigurationException::class);
 
         $providerFactory->create($configurations);
     }

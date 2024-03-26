@@ -11,6 +11,4 @@ use Publiux\laravelcdn\Validators\Contracts\CdnFacadeValidatorInterface;
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
  */
-class CdnFacadeValidator extends Validator implements CdnFacadeValidatorInterface
-{
-}
+class CdnFacadeValidator extends Validator implements CdnFacadeValidatorInterface {}

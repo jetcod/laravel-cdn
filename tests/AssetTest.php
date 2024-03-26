@@ -3,6 +3,7 @@
 namespace Publiux\laravelcdn\Tests;
 
 use Mockery as M;
+use Publiux\laravelcdn\Asset;
 
 /**
  * Class AssetTest.
@@ -10,6 +11,10 @@ use Mockery as M;
  * @category Test
  *
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 class AssetTest extends TestCase
 {
@@ -17,7 +22,7 @@ class AssetTest extends TestCase
     {
         parent::setUp();
 
-        $this->asset = new \Publiux\laravelcdn\Asset();
+        $this->asset = new Asset();
     }
 
     public function tearDown(): void

@@ -2,6 +2,4 @@
 
 namespace Publiux\laravelcdn\Exceptions;
 
-class MissingConfigurationFileException extends CdnException
-{
-}
+class MissingConfigurationFileException extends CdnException {}

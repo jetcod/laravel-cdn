@@ -3,7 +3,9 @@
 namespace Publiux\laravelcdn\Tests;
 
 use Mockery as M;
+use Publiux\laravelcdn\CdnFacade;
 use Publiux\laravelcdn\Exceptions\EmptyPathException;
+use Publiux\laravelcdn\Validators\CdnFacadeValidator;
 
 /**
  * Class CdnFacadeTest.
@@ -11,6 +13,10 @@ use Publiux\laravelcdn\Exceptions\EmptyPathException;
  * @category Test
  *
  * @author   Mahmoud Zalt <mahmoud@vinelab.com>
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 class CdnFacadeTest extends TestCase
 {
@@ -26,26 +32,26 @@ class CdnFacadeTest extends TestCase
             'providers' => [
                 'aws' => [
                     's3' => [
-                        'region'      => 'rrrrrrrrrrrgggggggggnnnnn',
-                        'version'     => 'vvvvvvvvssssssssssnnnnnnn',
-                        'buckets'     => [
+                        'region'  => 'rrrrrrrrrrrgggggggggnnnnn',
+                        'version' => 'vvvvvvvvssssssssssnnnnnnn',
+                        'buckets' => [
                             'bbbuuuucccctttt' => '*',
                         ],
-                        'acl'         => 'public-read',
-                        'cloudfront'  => [
+                        'acl'        => 'public-read',
+                        'cloudfront' => [
                             'use'     => false,
                             'cdn_url' => '',
                         ],
-                        'version'     => '1',
+                        'version' => '1',
                     ],
                 ],
             ],
-            'include'   => [
+            'include' => [
                 'directories' => [__DIR__],
                 'extensions'  => [],
                 'patterns'    => [],
             ],
-            'exclude'   => [
+            'exclude' => [
                 'directories' => [],
                 'files'       => [],
                 'extensions'  => [],
@@ -55,8 +61,8 @@ class CdnFacadeTest extends TestCase
         ];
 
         $this->asset_path = 'foo/bar.php';
-        $this->path_path = 'public/foo/bar.php';
-        $this->asset_url = 'https://bucket.s3.amazonaws.com/public/foo/bar.php';
+        $this->path_path  = 'public/foo/bar.php';
+        $this->asset_url  = 'https://bucket.s3.amazonaws.com/public/foo/bar.php';
 
         $this->provider = M::mock('Publiux\laravelcdn\Providers\AwsS3Provider');
 
@@ -68,10 +74,13 @@ class CdnFacadeTest extends TestCase
         $this->helper->shouldReceive('cleanPath')->andReturn($this->asset_path);
         $this->helper->shouldReceive('startsWith')->andReturn(true);
 
-        $this->validator = new \Publiux\laravelcdn\Validators\CdnFacadeValidator();
+        $this->validator = new CdnFacadeValidator();
 
-        $this->facade = new \Publiux\laravelcdn\CdnFacade(
-            $this->provider_factory, $this->helper, $this->validator);
+        $this->facade = new CdnFacade(
+            $this->provider_factory,
+            $this->helper,
+            $this->validator
+        );
     }
 
     public function tearDown(): void
@@ -83,8 +92,9 @@ class CdnFacadeTest extends TestCase
     public function testAssetIsCallingUrlGenerator()
     {
         $this->provider->shouldReceive('urlGenerator')
-                       ->once()
-                       ->andReturn($this->asset_url);
+            ->once()
+            ->andReturn($this->asset_url)
+        ;
 
         $result = $this->facade->asset($this->asset_path);
         // assert is calling the url generator
@@ -94,8 +104,9 @@ class CdnFacadeTest extends TestCase
     public function testPathIsCallingUrlGenerator()
     {
         $this->provider->shouldReceive('urlGenerator')
-                       ->once()
-                       ->andReturn($this->asset_url);
+            ->once()
+            ->andReturn($this->asset_url)
+        ;
 
         $result = $this->facade->asset($this->path_path);
         // assert is calling the url generator

@@ -29,26 +29,21 @@ class Cdn implements CdnInterface
      * The object that will hold the assets configurations
      * and the paths of the assets.
      *
-     * @var Contracts\AssetInterface
+     * @var AssetInterface
      */
     protected $asset_holder;
 
     /**
-     * @var \Publiux\laravelcdn\Contracts\ProviderFactoryInterface
+     * @var ProviderFactoryInterface
      */
     protected $provider_factory;
 
     /**
-     * @var \Publiux\laravelcdn\Contracts\CdnHelperInterface
+     * @var CdnHelperInterface
      */
     protected $helper;
 
     /**
-     * @param FinderInterface          $finder
-     * @param AssetInterface           $asset_holder
-     * @param ProviderFactoryInterface $provider_factory
-     * @param CdnHelperInterface       $helper
-     *
      * @internal param \Publiux\laravelcdn\Repository $configurations
      */
     public function __construct(
@@ -57,10 +52,10 @@ class Cdn implements CdnInterface
         ProviderFactoryInterface $provider_factory,
         CdnHelperInterface $helper
     ) {
-        $this->finder = $finder;
-        $this->asset_holder = $asset_holder;
+        $this->finder           = $finder;
+        $this->asset_holder     = $asset_holder;
         $this->provider_factory = $provider_factory;
-        $this->helper = $helper;
+        $this->helper           = $helper;
     }
 
     /**

@@ -14,6 +14,11 @@ use Publiux\laravelcdn\Providers\Contracts\ProviderInterface;
 abstract class Provider implements ProviderInterface
 {
     /**
+     * @var Instance of the console object
+     */
+    public $console;
+
+    /**
      * @var string
      */
     protected $key;
@@ -37,11 +42,6 @@ abstract class Provider implements ProviderInterface
      * @var string
      */
     protected $url;
-
-    /**
-     * @var Instance of the console object
-     */
-    public $console;
 
     abstract public function upload($assets);
 }

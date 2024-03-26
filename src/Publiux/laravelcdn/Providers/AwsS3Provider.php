@@ -2,12 +2,14 @@
 
 namespace Publiux\laravelcdn\Providers;
 
+use Aws\Result;
 use Aws\S3\BatchDelete;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Illuminate\Support\Collection;
 use Publiux\laravelcdn\Contracts\CdnHelperInterface;
 use Publiux\laravelcdn\Providers\Contracts\ProviderInterface;
+use Publiux\laravelcdn\Validators\Contracts\ConfigurationsInterface;
 use Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -15,19 +17,18 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * Class AwsS3Provider
  * Amazon (AWS) S3.
  *
- *
  * @category Driver
  *
- * @property string  $provider_url
- * @property string  $threshold
- * @property string  $version
- * @property string  $region
- * @property string  $credential_key
- * @property string  $credential_secret
- * @property string  $buckets
- * @property string  $acl
- * @property string  $cloudfront
- * @property string  $cloudfront_url
+ * @property string $provider_url
+ * @property string $threshold
+ * @property string $version
+ * @property string $region
+ * @property string $credential_key
+ * @property string $credential_secret
+ * @property string $buckets
+ * @property string $acl
+ * @property string $cloudfront
+ * @property string $cloudfront_url
  * @property string $http
  *
  * @author   Mahmoud Zalt <mahmoud@vinelab.com>
@@ -41,20 +42,20 @@ class AwsS3Provider extends Provider implements ProviderInterface
      * @var array
      */
     protected $default = [
-        'url' => null,
+        'url'       => null,
         'threshold' => 10,
         'providers' => [
             'aws' => [
                 's3' => [
-                    'version' => null,
-                    'region' => null,
-                    'endpoint' => null,
-                    'buckets' => null,
+                    'version'       => null,
+                    'region'        => null,
+                    'endpoint'      => null,
+                    'buckets'       => null,
                     'upload_folder' => '',
-                    'http' => null,
-                    'acl' => 'public-read',
-                    'cloudfront' => [
-                        'use' => false,
+                    'http'          => null,
+                    'acl'           => 'public-read',
+                    'cloudfront'    => [
+                        'use'     => false,
                         'cdn_url' => null,
                     ],
                 ],
@@ -72,7 +73,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
     /**
      * this array holds the parsed configuration to be used across the class.
      *
-     * @var Array
+     * @var array
      */
     protected $supplier;
 
@@ -87,40 +88,41 @@ class AwsS3Provider extends Provider implements ProviderInterface
     protected $batch;
 
     /**
-     * @var \Publiux\laravelcdn\Contracts\CdnHelperInterface
+     * @var CdnHelperInterface
      */
     protected $cdn_helper;
 
     /**
-     * @var \Publiux\laravelcdn\Validators\Contracts\ConfigurationsInterface
+     * @var ConfigurationsInterface
      */
     protected $configurations;
 
     /**
-     * @var \Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface
+     * @var ProviderValidatorInterface
      */
     protected $provider_validator;
 
-    /**
-     * @param \Symfony\Component\Console\Output\ConsoleOutput $console
-     * @param \Publiux\laravelcdn\Validators\Contracts\ProviderValidatorInterface $provider_validator
-     * @param \Publiux\laravelcdn\Contracts\CdnHelperInterface                    $cdn_helper
-     */
     public function __construct(
         ConsoleOutput $console,
         ProviderValidatorInterface $provider_validator,
         CdnHelperInterface $cdn_helper
     ) {
-        $this->console = $console;
+        $this->console            = $console;
         $this->provider_validator = $provider_validator;
-        $this->cdn_helper = $cdn_helper;
+        $this->cdn_helper         = $cdn_helper;
+    }
+
+    /**
+     * @return null|Mix
+     */
+    public function __get($attr)
+    {
+        return isset($this->supplier[$attr]) ? $this->supplier[$attr] : null;
     }
 
     /**
      * Read the configuration and prepare an array with the relevant configurations
      * for the (AWS S3) provider. and return itself.
-     *
-     * @param $configurations
      *
      * @return $this
      */
@@ -131,17 +133,17 @@ class AwsS3Provider extends Provider implements ProviderInterface
         $this->default = array_replace_recursive($this->default, $configurations);
 
         $supplier = [
-            'provider_url' => $this->default['url'],
-            'threshold' => $this->default['threshold'],
-            'version' => $this->default['providers']['aws']['s3']['version'],
-            'region' => $this->default['providers']['aws']['s3']['region'],
-            'endpoint' => $this->default['providers']['aws']['s3']['endpoint'],
-            'buckets' => $this->default['providers']['aws']['s3']['buckets'],
-            'acl' => $this->default['providers']['aws']['s3']['acl'],
-            'cloudfront' => $this->default['providers']['aws']['s3']['cloudfront']['use'],
+            'provider_url'   => $this->default['url'],
+            'threshold'      => $this->default['threshold'],
+            'version'        => $this->default['providers']['aws']['s3']['version'],
+            'region'         => $this->default['providers']['aws']['s3']['region'],
+            'endpoint'       => $this->default['providers']['aws']['s3']['endpoint'],
+            'buckets'        => $this->default['providers']['aws']['s3']['buckets'],
+            'acl'            => $this->default['providers']['aws']['s3']['acl'],
+            'cloudfront'     => $this->default['providers']['aws']['s3']['cloudfront']['use'],
             'cloudfront_url' => $this->default['providers']['aws']['s3']['cloudfront']['cdn_url'],
-            'http' => $this->default['providers']['aws']['s3']['http'],
-            'upload_folder' => $this->default['providers']['aws']['s3']['upload_folder']
+            'http'           => $this->default['providers']['aws']['s3']['http'],
+            'upload_folder'  => $this->default['providers']['aws']['s3']['upload_folder'],
         ];
 
         // check if any required configuration is missed
@@ -154,8 +156,6 @@ class AwsS3Provider extends Provider implements ProviderInterface
 
     /**
      * Upload assets.
-     *
-     * @param $assets
      *
      * @return bool
      */
@@ -178,9 +178,8 @@ class AwsS3Provider extends Provider implements ProviderInterface
             $this->console->writeln('<fg=yellow>Upload in progress......</fg=yellow>');
             foreach ($assets as $file) {
                 try {
-                    $this->console->writeln('<fg=cyan>'.'Uploading file path: '.$file->getRealpath().'</fg=cyan>');
+                    $this->console->writeln('<fg=cyan>Uploading file path: ' . $file->getRealpath() . '</fg=cyan>');
                     $command = $this->s3_client->getCommand('putObject', [
-
                         // the bucket name
                         'Bucket' => $this->getBucket(),
                         // the path of the file on the server (CDN)
@@ -189,16 +188,16 @@ class AwsS3Provider extends Provider implements ProviderInterface
                         'Body' => fopen($file->getRealPath(), 'r'),
                         // the permission of the file
 
-                        'ACL' => $this->acl,
+                        'ACL'          => $this->acl,
                         'CacheControl' => $this->default['providers']['aws']['s3']['cache-control'],
-                        'Metadata' => $this->default['providers']['aws']['s3']['metadata'],
-                        'Expires' => $this->default['providers']['aws']['s3']['expires'],
+                        'Metadata'     => $this->default['providers']['aws']['s3']['metadata'],
+                        'Expires'      => $this->default['providers']['aws']['s3']['expires'],
                     ]);
-
 
                     $this->s3_client->execute($command);
                 } catch (S3Exception $e) {
-                    $this->console->writeln('<fg=red>Upload error: '.$e->getMessage().'</fg=red>');
+                    $this->console->writeln('<fg=red>Upload error: ' . $e->getMessage() . '</fg=red>');
+
                     return false;
                 }
             }
@@ -223,65 +222,28 @@ class AwsS3Provider extends Provider implements ProviderInterface
     {
         try {
             // Instantiate an S3 client
-            $this->setS3Client(new S3Client([
-                        'version' => $this->supplier['version'],
-                        'region' => $this->supplier['region'],
+            $this->setS3Client(
+                new S3Client(
+                    [
+                        'version'  => $this->supplier['version'],
+                        'region'   => $this->supplier['region'],
                         'endpoint' => $this->supplier['endpoint'],
-                        'http' => $this->supplier['http']
+                        'http'     => $this->supplier['http'],
                     ]
                 )
             );
         } catch (\Exception $e) {
-            $this->console->writeln('<fg=red>Connection error: '.$e->getMessage().'</fg=red>');
+            $this->console->writeln('<fg=red>Connection error: ' . $e->getMessage() . '</fg=red>');
+
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @param $s3_client
-     */
     public function setS3Client($s3_client)
     {
         $this->s3_client = $s3_client;
-    }
-
-    /**
-     * @param  Collection $assets
-     * @return mixed
-     */
-    private function getFilesAlreadyOnBucket($assets)
-    {
-        $filesOnAWS = new Collection([]);
-
-        $params = ['Bucket' => $this->getBucket()];
-        do {
-            if ($files = $this->s3_client->listObjectsV2($params)) {
-                $params['ContinuationToken'] = $files->get('NextContinuationToken');
-
-                foreach ($files->get('Contents')?:[] as $file) {
-                    $a = [
-                        'Key' => $file['Key'],
-                        "LastModified" => $file['LastModified']->getTimestamp(),
-                        'Size' => intval($file['Size'])
-                    ];
-                    $filesOnAWS->put($file['Key'], $a);
-                }
-            }
-        } while ($files instanceof \Aws\Result && $files->get('IsTruncated'));
-
-        if ($filesOnAWS->isEmpty()) {
-            //no files on bucket. lets upload everything found.
-            return $assets;
-        }
-
-        return $assets->filter(function ($file) use (&$filesOnAWS) {
-            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $file->getPathName()));
-
-            //select to upload files that are different in size AND last modified time.
-            return !$fileOnAWS || $file->getMTime() !== $fileOnAWS['LastModified'] && $file->getSize() !== $fileOnAWS['Size'];
-        });
     }
 
     /**
@@ -307,7 +269,6 @@ class AwsS3Provider extends Provider implements ProviderInterface
      */
     public function emptyBucket()
     {
-
         // connect before uploading
         $connected = $this->connect();
 
@@ -319,16 +280,15 @@ class AwsS3Provider extends Provider implements ProviderInterface
         $this->console->writeln('<fg=yellow>Emptying in progress...</fg=yellow>');
 
         try {
-
             // Get the contents of the bucket for information purposes
             $contents = $this->s3_client->listObjects([
                 'Bucket' => $this->getBucket(),
-                'Key' => '',
+                'Key'    => '',
             ]);
 
             // Check if the bucket is already empty
             if (!$contents['Contents']) {
-                $this->console->writeln('<fg=green>The bucket '.$this->getBucket().' is already empty.</fg=green>');
+                $this->console->writeln('<fg=green>The bucket ' . $this->getBucket() . ' is already empty.</fg=green>');
 
                 return true;
             }
@@ -341,11 +301,12 @@ class AwsS3Provider extends Provider implements ProviderInterface
 
             $empty->delete();
         } catch (S3Exception $e) {
-            $this->console->writeln('<fg=red>Deletion error: '.$e->getMessage().'</fg=red>');
+            $this->console->writeln('<fg=red>Deletion error: ' . $e->getMessage() . '</fg=red>');
+
             return false;
         }
 
-        $this->console->writeln('<fg=green>The bucket '.$this->getBucket().' is now empty.</fg=green>');
+        $this->console->writeln('<fg=green>The bucket ' . $this->getBucket() . ' is now empty.</fg=green>');
 
         return true;
     }
@@ -354,13 +315,11 @@ class AwsS3Provider extends Provider implements ProviderInterface
      * This function will be called from the CdnFacade class when
      * someone use this {{ Cdn::asset('') }} facade helper.
      *
-     * @param $path
-     *
      * @return string
      */
     public function urlGenerator($path)
     {
-        if ($this->getCloudFront() === true) {
+        if (true === $this->getCloudFront()) {
             $url = $this->cdn_helper->parseUrl($this->getCloudFrontUrl());
 
             return $url['scheme'] . '://' . $url['host'] . '/' . $path;
@@ -369,7 +328,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
         $url = $this->cdn_helper->parseUrl($this->getUrl());
 
         $bucket = $this->getBucket();
-        $bucket = (!empty($bucket)) ? $bucket.'.' : '';
+        $bucket = (!empty($bucket)) ? $bucket . '.' : '';
 
         return $url['scheme'] . '://' . $bucket . $url['host'] . '/' . $path;
     }
@@ -391,7 +350,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
      */
     public function getCloudFrontUrl()
     {
-        return rtrim($this->cloudfront_url, '/').'/';
+        return rtrim($this->cloudfront_url, '/') . '/';
     }
 
     /**
@@ -403,12 +362,40 @@ class AwsS3Provider extends Provider implements ProviderInterface
     }
 
     /**
-     * @param $attr
+     * @param Collection $assets
      *
-     * @return Mix | null
+     * @return mixed
      */
-    public function __get($attr)
+    private function getFilesAlreadyOnBucket($assets)
     {
-        return isset($this->supplier[$attr]) ? $this->supplier[$attr] : null;
+        $filesOnAWS = new Collection([]);
+
+        $params = ['Bucket' => $this->getBucket()];
+        do {
+            if ($files = $this->s3_client->listObjectsV2($params)) {
+                $params['ContinuationToken'] = $files->get('NextContinuationToken');
+
+                foreach ($files->get('Contents') ?: [] as $file) {
+                    $a = [
+                        'Key'          => $file['Key'],
+                        'LastModified' => $file['LastModified']->getTimestamp(),
+                        'Size'         => intval($file['Size']),
+                    ];
+                    $filesOnAWS->put($file['Key'], $a);
+                }
+            }
+        } while ($files instanceof Result && $files->get('IsTruncated'));
+
+        if ($filesOnAWS->isEmpty()) {
+            // no files on bucket. lets upload everything found.
+            return $assets;
+        }
+
+        return $assets->filter(function ($file) use (&$filesOnAWS) {
+            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $file->getPathName()));
+
+            // select to upload files that are different in size AND last modified time.
+            return !$fileOnAWS || $file->getMTime() !== $fileOnAWS['LastModified'] && $file->getSize() !== $fileOnAWS['Size'];
+        });
     }
 }

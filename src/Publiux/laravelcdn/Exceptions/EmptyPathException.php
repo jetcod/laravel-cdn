@@ -2,6 +2,4 @@
 
 namespace Publiux\laravelcdn\Exceptions;
 
-class EmptyPathException extends CdnException
-{
-}
+class EmptyPathException extends CdnException {}

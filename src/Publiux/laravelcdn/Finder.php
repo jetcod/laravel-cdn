@@ -18,13 +18,10 @@ use Symfony\Component\Finder\Finder as SymfonyFinder;
 class Finder extends SymfonyFinder implements FinderInterface
 {
     /**
-     * @var \Symfony\Component\Console\Output\ConsoleOutput
+     * @var ConsoleOutput
      */
     protected $console;
 
-    /**
-     * @param ConsoleOutput $console
-     */
     public function __construct(ConsoleOutput $console)
     {
         $this->console = $console;
@@ -37,19 +34,13 @@ class Finder extends SymfonyFinder implements FinderInterface
      * in the included directories, except all ignored
      * (directories, patterns, extensions and files).
      *
-     * @param AssetInterface $asset_holder
-     *
      * @return Collection
      */
     public function read(AssetInterface $asset_holder)
     {
-        /*
-         * add the included directories and files
-         */
+        // add the included directories and files
         $this->includeThis($asset_holder);
-        /*
-         * exclude the ignored directories and files
-         */
+        // exclude the ignored directories and files
         $this->excludeThis($asset_holder);
 
         // user terminal message
@@ -59,7 +50,7 @@ class Finder extends SymfonyFinder implements FinderInterface
         $assets = [];
         foreach ($this->files() as $file) {
             // user terminal message
-            $this->console->writeln('<fg=cyan>'.'Path: '.$file->getRealpath().'</fg=cyan>');
+            $this->console->writeln('<fg=cyan>Path: ' . $file->getRealpath() . '</fg=cyan>');
 
             $assets[] = $file;
         }
@@ -69,18 +60,15 @@ class Finder extends SymfonyFinder implements FinderInterface
 
     /**
      * Add the included directories and files.
-     *
-     * @param AssetInterface $asset_holder
      */
     private function includeThis(AssetInterface $asset_holder)
     {
-
         // include the included directories
         $this->in($asset_holder->getIncludedDirectories());
 
         // include files with this extensions
         foreach ($asset_holder->getIncludedExtensions() as $extension) {
-            $this->name('*'.$extension);
+            $this->name('*' . $extension);
         }
 
         // include patterns
@@ -94,8 +82,6 @@ class Finder extends SymfonyFinder implements FinderInterface
 
     /**
      * exclude the ignored directories and files.
-     *
-     * @param AssetInterface $asset_holder
      */
     private function excludeThis(AssetInterface $asset_holder)
     {
@@ -111,7 +97,7 @@ class Finder extends SymfonyFinder implements FinderInterface
         $excluded_extensions = $asset_holder->getExcludedExtensions();
         if (!empty($excluded_extensions)) {
             foreach ($asset_holder->getExcludedExtensions() as $extension) {
-                $this->notName('*'.$extension);
+                $this->notName('*' . $extension);
             }
         }
 
