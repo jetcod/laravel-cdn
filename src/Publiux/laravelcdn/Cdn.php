@@ -92,4 +92,17 @@ class Cdn implements CdnInterface
 
         return $provider->emptyBucket();
     }
+
+    /**
+     * Appends the given version name to the upload folder path.
+     *
+     * @param string $name The name to append to the upload folder.
+     * @return $this The current instance of the Cdn class.
+     */
+    public function version(string $name)
+    {
+        $this->helper->appendUploadFolder(trim($name));
+
+        return $this;
+    }
 }

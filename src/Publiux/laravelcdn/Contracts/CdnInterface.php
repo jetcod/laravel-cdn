@@ -12,4 +12,6 @@ interface CdnInterface
     public function push();
 
     public function emptyBucket();
+
+    public function version(string $name);
 }

@@ -99,4 +99,19 @@ class CdnHelper implements CdnHelperInterface
     {
         return rtrim(ltrim($path, '/'), '/');
     }
+
+    /**
+     * Appends the specified path to the configured upload folder for the AWS S3 CDN provider.
+     *
+     * @param string $path the path to append to the upload folder
+     */
+    public function appendUploadFolder(string $path): self
+    {
+        $uploadFolder = $this->configurations->get('cdn.providers.aws.s3.upload_folder');
+        $uploadFolder = implode(DIRECTORY_SEPARATOR, array_map([$this, 'cleanPath'], [$uploadFolder, $path]));
+
+        $this->configurations->set('cdn.providers.aws.s3.upload_folder', ltrim(rtrim($uploadFolder, '/'), '/') . DIRECTORY_SEPARATOR);
+
+        return $this;
+    }
 }

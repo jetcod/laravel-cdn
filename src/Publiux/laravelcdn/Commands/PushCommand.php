@@ -20,7 +20,7 @@ class PushCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cdn:push';
+    protected $signature = 'cdn:push {--ver= : The version number to append to the base path}';
 
     /**
      * The console command description.
@@ -50,6 +50,10 @@ class PushCommand extends Command
      */
     public function handle()
     {
+        if (!empty($this->option('ver'))) {
+            $this->cdn->version($this->option('ver'));
+        }
+
         $this->cdn->push();
     }
 }
