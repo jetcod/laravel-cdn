@@ -143,7 +143,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
             'cloudfront'     => $this->default['providers']['aws']['s3']['cloudfront']['use'],
             'cloudfront_url' => $this->default['providers']['aws']['s3']['cloudfront']['cdn_url'],
             'http'           => $this->default['providers']['aws']['s3']['http'],
-            'upload_folder'  => $this->default['providers']['aws']['s3']['upload_folder'],
+            'upload_folder'  => ltrim($this->default['providers']['aws']['s3']['upload_folder'], '/') . DIRECTORY_SEPARATOR,
         ];
 
         // check if any required configuration is missed
@@ -393,7 +393,8 @@ class AwsS3Provider extends Provider implements ProviderInterface
         }
 
         return $assets->filter(function ($file) use (&$filesOnAWS) {
-            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $file->getPathName()));
+            $pathOnAWS = $this->supplier['upload_folder'] . str_replace('\\', '/', $file->getPathName());
+            $fileOnAWS = $filesOnAWS->get($pathOnAWS);
 
             // select to upload files that are different in size AND last modified time.
             return !$fileOnAWS
