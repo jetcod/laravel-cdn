@@ -32,6 +32,7 @@ class CdnFacadeTest extends TestCase
             'providers' => [
                 'aws' => [
                     's3' => [
+                        'upload_folder' => '',
                         'region'  => 'rrrrrrrrrrrgggggggggnnnnn',
                         'version' => 'vvvvvvvvssssssssssnnnnnnn',
                         'buckets' => [
