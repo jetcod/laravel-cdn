@@ -63,18 +63,13 @@ class PushCommand extends Command
 
         $configurations = $this->helper->getConfigurations();
 
-        if ($this->option('y')) {
-            $this->cdn->push();
-            return;
-        }
-
         if (!empty($configurations['providers']['aws']['s3']['upload_folder'])) {
             $this->warn(sprintf('Your assets will be uploaded to the following path: "%s"', $configurations['providers']['aws']['s3']['upload_folder']));
         } else {
             $this->warn(sprintf('Your assets will be uploaded to the root of CDN path.'));
         }
 
-        if ($this->confirm('Do you wish to continue?') || $this->option('no-interaction')) {
+        if ($this->option('no-interaction') || $this->confirm('Do you wish to continue?')) {
             $this->cdn->push();
         }
     }

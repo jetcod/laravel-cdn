@@ -48,7 +48,7 @@ class CdnTest extends TestCase
         $m_provider_factory->shouldReceive('create')->once()->andReturn($m_provider);
 
         $m_helper = M::mock('Publiux\laravelcdn\Contracts\CdnHelperInterface');
-        $m_helper->shouldReceive('getConfigurations')->once()->andReturn([]);
+        $m_helper->shouldReceive('getConfigurations')->twice()->andReturn([]);
 
         $this->app->bind('Publiux\laravelcdn\Contracts\AssetInterface', function () use ($m_asset) {
             return $m_asset;
@@ -66,9 +66,10 @@ class CdnTest extends TestCase
             return $m_helper;
         });
 
-        $result = $this->artisan('cdn:push');
-
-        $result->assertSuccessful();
+        $this->artisan('cdn:push', ['--no-interaction' => true])
+            ->expectsOutput('Your assets will be uploaded to the root of CDN path.')
+            ->assertExitCode(0)
+        ;
     }
 
     public function testPushCommand()
@@ -101,9 +102,10 @@ class CdnTest extends TestCase
             return $p_aws_s3_provider;
         });
 
-        $result = $this->artisan('cdn:push');
-
-        $result->assertExitCode(0);
+        $this->artisan('cdn:push', ['--no-interaction' => true])
+            ->expectsOutput('Your assets will be uploaded to the root of CDN path.')
+            ->assertExitCode(0)
+        ;
     }
 
     protected function getEnvironmentSetUp($app)
