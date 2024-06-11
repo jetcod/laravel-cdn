@@ -3,6 +3,7 @@
 namespace Publiux\laravelcdn\Commands;
 
 use Illuminate\Console\Command;
+use Publiux\laravelcdn\Contracts\CdnHelperInterface;
 use Publiux\laravelcdn\Contracts\CdnInterface;
 
 /**
@@ -36,9 +37,15 @@ class PushCommand extends Command
      */
     protected $cdn;
 
-    public function __construct(CdnInterface $cdn)
+    /**
+     * @var CdnHelperInterface
+     */
+    protected $helper;
+
+    public function __construct(CdnInterface $cdn, CdnHelperInterface $helper)
     {
-        $this->cdn = $cdn;
+        $this->cdn    = $cdn;
+        $this->helper = $helper;
 
         parent::__construct();
     }
@@ -54,6 +61,21 @@ class PushCommand extends Command
             $this->cdn->version($this->option('ver'));
         }
 
-        $this->cdn->push();
+        $configurations = $this->helper->getConfigurations();
+
+        if ($this->option('y')) {
+            $this->cdn->push();
+            return;
+        }
+
+        if (!empty($configurations['providers']['aws']['s3']['upload_folder'])) {
+            $this->warn(sprintf('Your assets will be uploaded to the following path: "%s"', $configurations['providers']['aws']['s3']['upload_folder']));
+        } else {
+            $this->warn(sprintf('Your assets will be uploaded to the root of CDN path.'));
+        }
+
+        if ($this->confirm('Do you wish to continue?') || $this->option('no-interaction')) {
+            $this->cdn->push();
+        }
     }
 }
