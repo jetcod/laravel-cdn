@@ -110,7 +110,7 @@ class CdnHelper implements CdnHelperInterface
         $uploadFolder = $this->configurations->get('cdn.providers.aws.s3.upload_folder');
         $uploadFolder = implode(DIRECTORY_SEPARATOR, array_map([$this, 'cleanPath'], [$uploadFolder, $path]));
 
-        $this->configurations->set('cdn.providers.aws.s3.upload_folder', ltrim(rtrim($uploadFolder, '/'), '/') . DIRECTORY_SEPARATOR);
+        $this->configurations->set('cdn.providers.aws.s3.upload_folder', $uploadFolder . DIRECTORY_SEPARATOR);
 
         return $this;
     }

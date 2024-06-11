@@ -143,7 +143,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
             'cloudfront'     => $this->default['providers']['aws']['s3']['cloudfront']['use'],
             'cloudfront_url' => $this->default['providers']['aws']['s3']['cloudfront']['cdn_url'],
             'http'           => $this->default['providers']['aws']['s3']['http'],
-            'upload_folder'  => ltrim($this->default['providers']['aws']['s3']['upload_folder'], '/') . DIRECTORY_SEPARATOR,
+            'upload_folder'  => ltrim(rtrim($this->default['providers']['aws']['s3']['upload_folder'], '/'), '/') . DIRECTORY_SEPARATOR,
         ];
 
         // check if any required configuration is missed
