@@ -175,6 +175,7 @@ return [
                 'cloudfront' => [
                     'use'     => env('CDN_UseCloudFront', false),
                     'cdn_url' => env('CDN_CloudFrontUrl', ''),
+                    'cdn_version' => env('CDN_VERSION', ''),
                 ],
 
                 /*

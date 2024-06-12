@@ -45,6 +45,10 @@ class CdnHelper implements CdnHelperInterface
             throw new MissingConfigurationFileException("CDN 'config file' (cdn.php) not found");
         }
 
+        $uploadDirectory = trim($configurations['providers']['aws']['s3']['upload_folder'], ' \/');
+        $cdnVersion = trim($configurations['providers']['aws']['s3']['cloudfront']['cdn_version'], ' \/');
+        $configurations['providers']['aws']['s3']['upload_folder'] = trim(implode(DIRECTORY_SEPARATOR, [$uploadDirectory, $cdnVersion]), ' \/');
+
         return $configurations;
     }
 
@@ -101,16 +105,15 @@ class CdnHelper implements CdnHelperInterface
     }
 
     /**
-     * Appends the specified path to the configured upload folder for the AWS S3 CDN provider.
+     * Sets the CDN version to be used.
      *
-     * @param string $path the path to append to the upload folder
+     * @param string $version The version to set.
+     *
+     * @return $this The current instance for method chaining.
      */
-    public function appendUploadFolder(string $path): self
+    public function setVersion(string $version): self
     {
-        $uploadFolder = $this->configurations->get('cdn.providers.aws.s3.upload_folder');
-        $uploadFolder = implode(DIRECTORY_SEPARATOR, array_map([$this, 'cleanPath'], [$uploadFolder, $path]));
-
-        $this->configurations->set('cdn.providers.aws.s3.upload_folder', $uploadFolder . DIRECTORY_SEPARATOR);
+        $this->configurations->set('cdn.providers.aws.s3.cloudfront.cdn_version', trim($version, ' \/'));
 
         return $this;
     }

@@ -120,6 +120,7 @@ class CdnTest extends TestCase
                     's3' => [
                         'region'  => 'us-standard',
                         'version' => 'latest',
+                        'upload_folder' => '',
                         'buckets' => [
                             'my-bucket-name' => '*',
                         ],
@@ -127,6 +128,7 @@ class CdnTest extends TestCase
                         'cloudfront' => [
                             'use'     => false,
                             'cdn_url' => '',
+                            'cdn_version' => '',
                         ],
                         'metadata' => [],
 

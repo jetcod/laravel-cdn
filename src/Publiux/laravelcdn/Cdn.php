@@ -101,7 +101,7 @@ class Cdn implements CdnInterface
      */
     public function version(string $name)
     {
-        $this->helper->appendUploadFolder(trim($name));
+        $this->helper->setVersion($name);
 
         return $this;
     }
