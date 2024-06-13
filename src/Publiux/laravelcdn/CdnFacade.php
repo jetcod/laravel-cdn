@@ -47,6 +47,11 @@ class CdnFacade implements CdnFacadeInterface
     protected $cdn_facade_validator;
 
     /**
+     * @var string
+     */
+    private $defaultVersion;
+
+    /**
      * Calls the provider initializer.
      */
     public function __construct(
@@ -59,6 +64,8 @@ class CdnFacade implements CdnFacadeInterface
         $this->cdn_facade_validator = $cdn_facade_validator;
 
         $this->init();
+
+        $this->defaultVersion = $this->configurations['providers']['aws']['s3']['cloudfront']['cdn_version'] ?? null;
     }
 
     /**
@@ -164,6 +171,9 @@ class CdnFacade implements CdnFacadeInterface
         // if the package is surpassed, then return the same $path
         // to load the asset from the localhost
         if (isset($this->configurations['bypass']) && $this->configurations['bypass']) {
+            // Revert the version back to default
+            $this->version($this->defaultVersion);
+
             return Request::root() . '/' . $path;
         }
 
@@ -183,10 +193,19 @@ class CdnFacade implements CdnFacadeInterface
         $prepend = $this->helper->cleanPath($this->configurations['providers']['aws']['s3']['upload_folder']) . DIRECTORY_SEPARATOR . $prepend;
         $clean_path = $this->helper->cleanPath($prepend) . DIRECTORY_SEPARATOR . $this->helper->cleanPath($path);
 
+        // Revert the version back to default
+        $this->version($this->defaultVersion);
+
         // call the provider specific url generator
         return $this->provider->urlGenerator($clean_path);
     }
 
+    /**
+     * Sets the version for the CDN and reinitializes the CDN provider.
+     *
+     * @param string|null $name The version name to set, or null to use the default version.
+     * @return $this The current CDN facade instance.
+     */
     public function version(?string $name)
     {
         $this->helper->setVersion($name);
