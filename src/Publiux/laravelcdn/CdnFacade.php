@@ -190,6 +190,7 @@ class CdnFacade implements CdnFacadeInterface
     public function version(?string $name)
     {
         $this->helper->setVersion($name);
+        $this->init();
 
         return $this;
     }
