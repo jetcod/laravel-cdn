@@ -111,9 +111,9 @@ class CdnHelper implements CdnHelperInterface
      *
      * @return $this The current instance for method chaining.
      */
-    public function setVersion(string $version): self
+    public function setVersion(?string $version): self
     {
-        $this->configurations->set('cdn.providers.aws.s3.cloudfront.cdn_version', trim($version, ' \/'));
+        $this->configurations->set('cdn.providers.aws.s3.cloudfront.cdn_version', !is_null($version) ? trim($version, ' \/') : null);
 
         return $this;
     }

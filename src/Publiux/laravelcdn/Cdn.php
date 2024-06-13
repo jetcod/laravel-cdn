@@ -99,7 +99,7 @@ class Cdn implements CdnInterface
      * @param string $name The name to append to the upload folder.
      * @return $this The current instance of the Cdn class.
      */
-    public function version(string $name)
+    public function version(?string $name)
     {
         $this->helper->setVersion($name);
 

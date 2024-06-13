@@ -186,4 +186,11 @@ class CdnFacade implements CdnFacadeInterface
         // call the provider specific url generator
         return $this->provider->urlGenerator($clean_path);
     }
+
+    public function version(?string $name)
+    {
+        $this->helper->setVersion($name);
+
+        return $this;
+    }
 }

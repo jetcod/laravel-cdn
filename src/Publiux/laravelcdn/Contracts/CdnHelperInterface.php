@@ -19,5 +19,5 @@ interface CdnHelperInterface
 
     public function cleanPath($path);
 
-    public function setVersion(string $version): CdnHelperInterface;
+    public function setVersion(?string $name): CdnHelperInterface;
 }

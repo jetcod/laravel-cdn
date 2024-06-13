@@ -13,5 +13,5 @@ interface CdnInterface
 
     public function emptyBucket();
 
-    public function version(string $name);
+    public function version(?string $name);
 }
