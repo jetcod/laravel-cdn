@@ -20,6 +20,15 @@ use Publiux\laravelcdn\Validators\CdnFacadeValidator;
  */
 class CdnFacadeTest extends TestCase
 {
+    protected $provider;
+    protected $facade;
+    protected $asset_url;
+    protected $asset_path;
+    protected $path_path;
+    protected $provider_factory;
+    protected $helper;
+    protected $validator;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -69,11 +78,13 @@ class CdnFacadeTest extends TestCase
 
         $this->provider_factory = M::mock('Publiux\laravelcdn\Contracts\ProviderFactoryInterface');
         $this->provider_factory->shouldReceive('create')->once()->andReturn($this->provider);
+        $this->provider_factory->shouldReceive('create')->andReturn($this->provider);
 
         $this->helper = M::mock('Publiux\laravelcdn\Contracts\CdnHelperInterface');
-        $this->helper->shouldReceive('getConfigurations')->once()->andReturn($configuration_file);
+        $this->helper->shouldReceive('getConfigurations')->andReturn($configuration_file);
         $this->helper->shouldReceive('cleanPath')->andReturn($this->asset_path);
         $this->helper->shouldReceive('startsWith')->andReturn(true);
+        $this->helper->shouldReceive('setVersion')->andReturnSelf();
 
         $this->validator = new CdnFacadeValidator();
 
