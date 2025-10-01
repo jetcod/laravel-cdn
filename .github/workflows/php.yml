@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "development" ]
   pull_request:
     branches: [ "master" ]
 
@@ -15,8 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        php-version: [ 8.3, 8.2, 8.1, 8.0 ]
-        laravel-version: [ "10.*", "9.*", "8.*" ]
+        php-version: [ 8.4, 8.3, 8.2, 8.1, 8.0 ]
+        laravel-version: [ "12.*", "11.*", "10.*", "9.*", "8.*" ]
 
     steps:
       - uses: actions/checkout@v2
